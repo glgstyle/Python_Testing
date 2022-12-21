@@ -1,6 +1,6 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
-
+# from config import DevelopmentConfig
 
 def loadClubs():
     with open('clubs.json') as c:
@@ -16,6 +16,8 @@ def loadCompetitions():
 
 app = Flask(__name__)
 app.secret_key = 'something_special'
+# app.config.from_object('config.DevelopmentConfig')
+# app.config.from_object(DevelopmentConfig)
 
 competitions = loadCompetitions()
 clubs = loadClubs()
