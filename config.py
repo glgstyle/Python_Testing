@@ -1,6 +1,7 @@
 class Config(object):
-    DEBUG = False
-    TESTING = False
+    FLASK_ENV = 'development'
+    DEBUG = True
+    TESTING = True
     DATABASE_URI = 'sqlite:///:memory:'
 
 class ProductionConfig(Config):

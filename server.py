@@ -1,6 +1,6 @@
-import json
-from flask import Flask,render_template,request,redirect,flash,url_for
-# from config import DevelopmentConfig
+import json, os
+from flask import Flask,render_template,request,redirect,flash,url_for,abort
+from config import Config, DevelopmentConfig
 
 def loadClubs():
     with open('clubs.json') as c:
@@ -16,8 +16,8 @@ def loadCompetitions():
 
 app = Flask(__name__)
 app.secret_key = 'something_special'
-# app.config.from_object('config.DevelopmentConfig')
 # app.config.from_object(DevelopmentConfig)
+app.config.update(TESTING=True, DEBUG=True)
 
 competitions = loadCompetitions()
 clubs = loadClubs()
@@ -26,11 +26,19 @@ clubs = loadClubs()
 def index():
     return render_template('index.html')
 
+
+# @app.route('/showSummary',methods=['POST'])
+# def showSummary():
+#     club = [club for club in clubs if club['email'] == request.form['email']][0]
+#     return render_template('welcome.html',club=club,competitions=competitions)
+
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']][0]
-    return render_template('welcome.html',club=club,competitions=competitions)
-
+    try:
+        club = [club for club in clubs if club['email'] == request.form['email']][0]
+        return render_template('welcome.html',club=club,competitions=competitions)
+    except IndexError:
+        abort(401, description="Sorry, that email wasn't found.")  
 
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
