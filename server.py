@@ -57,6 +57,7 @@ def search_club_by_name(clubs, name):
             break
     return found_club
 
+
 def search_competition_by_name(competitions, name):
     found_competition = None
     for competition in competitions:
@@ -86,8 +87,10 @@ def club_points_substrations(club, clubPoints, placesRequired):
 
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
-    competition = [c for c in competitions if c['name'] == request.form['competition']][0]
-    club = [c for c in clubs if c['name'] == request.form['club']][0]
+    clubs = loadClubs()
+    competitions = loadCompetitions()
+    club = search_club_by_name(clubs, name=request.form['club'])
+    competition = search_competition_by_name(competitions, request.form['competition'])
     placesRequired = int(request.form['places'])
     availablesCompetitionPlaces = int(competition['numberOfPlaces'])
     clubPoints = int(club['points'])
@@ -105,10 +108,7 @@ def purchasePlaces():
         return render_template('booking.html',club=club,competition=competition), 405
     else:
         competition['numberOfPlaces'] = availablesCompetitionPlaces - placesRequired
-        print(club['points'], "before")
         club['points'] = club_points_substrations(club, clubPoints, placesRequired)
-        print(club['points'], "after")
-        # club['points'] = clubPoints - placesRequired
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
 

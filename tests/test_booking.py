@@ -23,7 +23,7 @@ def test_insufficient_points_balance_should_return_error(client):
     response= client.post('/purchasePlaces', data={
       "club": "She Lifts",
       "competition": "Spring Festival",
-      "places": 13
+      "places": 16
     })
     assert response.status_code == 405
     # assert "You have " + response.data['points'] + " points which is not enough to book " + response.data['places'] + " places."  in response.data.decode('UTF-8')
@@ -37,7 +37,6 @@ def test_required_places_superior_to_available_places_should_return_status_405(c
     response= client.post('/purchasePlaces', data={
       "club": "She Lifts",
       "competition": "Fall Classic",
-      "numberOfPlaces": 10,
       "places": 11
     })
     assert response.status_code == 405
@@ -56,3 +55,17 @@ def test_book_negative_number_of_places_should_return_error(client):
     assert response.status_code == 405
     assert "Booking a negative number of places or 0 is forbidden." in response.data.decode('UTF-8')
 
+
+# substract points from club when club books places
+def test_booked_places_should_subtract_club_points(client):
+    """
+    Test deduction of club points when club books a competition
+    with points of club = 15.  
+    """
+    response= client.post('/purchasePlaces', data={
+      "club": "She Lifts",
+      "competition": "Spring Festival",
+      "places": 3
+    })
+    assert response.status_code == 200
+    assert "Points available: 12" in response.data.decode('UTF-8')
