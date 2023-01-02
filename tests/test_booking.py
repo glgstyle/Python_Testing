@@ -1,3 +1,4 @@
+from server import MAX_BOOKING
 # They should not be able to redeem more points than available; this should be done within the UI. 
 # The redeemed points should be correctly deducted from the club's total.
 
@@ -69,3 +70,17 @@ def test_booked_places_should_subtract_club_points(client):
     })
     assert response.status_code == 200
     assert "Points available: 12" in response.data.decode('UTF-8')
+
+
+# book more than max determinate places(12)
+def test_booking_more_than_max_booking_places_should_return_error(client):
+    """
+    Test club books more than max_booking places in a competition.
+    """
+    response= client.post('/purchasePlaces', data={
+      "club": "Simply Lift",
+      "competition": "Spring Festival",
+      "places": 13
+    })
+    assert response.status_code == 405
+    assert "Booking more than " + str(MAX_BOOKING) + " places is forbidden." in response.data.decode('UTF-8')

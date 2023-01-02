@@ -3,6 +3,9 @@ from flask import Flask,render_template,request,redirect,flash,url_for
 from config import Config, DevelopmentConfig
 
 
+MAX_BOOKING = 12
+
+
 def loadClubs():
     with open('clubs.json') as c:
          listOfClubs = json.load(c)['clubs']
@@ -104,6 +107,10 @@ def purchasePlaces():
         return render_template('booking.html',club=club,competition=competition), 405
     elif placesRequired <= 0:
         message = "Booking a negative number of places or 0 is forbidden."
+        flash(message)
+        return render_template('booking.html',club=club,competition=competition), 405
+    elif placesRequired > MAX_BOOKING:
+        message = "Booking more than " + str(MAX_BOOKING) + " places is forbidden."
         flash(message)
         return render_template('booking.html',club=club,competition=competition), 405
     else:
