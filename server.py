@@ -1,6 +1,7 @@
 import json, os
 from flask import Flask,render_template,request,redirect,flash,url_for
 from config import Config, DevelopmentConfig
+from datetime import datetime
 
 
 MAX_BOOKING = 12
@@ -25,6 +26,7 @@ app.config.update(TESTING=True, DEBUG=True)
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+
 
 @app.route('/')
 def index():

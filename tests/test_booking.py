@@ -84,3 +84,19 @@ def test_booking_more_than_max_booking_places_should_return_error(client):
     })
     assert response.status_code == 405
     assert "Booking more than " + str(MAX_BOOKING) + " places is forbidden." in response.data.decode('UTF-8')
+
+
+# The places are correctly deducted from the competition
+def test_booked_places_should_be_subtracted_from_competitions_places(client):
+    """
+    Test deduction of competition places when club books a competition
+    with number of places = 10.  
+    """
+    available_places = 10
+    response= client.post('/purchasePlaces', data={
+      "club": "She Lifts",
+      "competition": "Fall classic",
+      "places": 3
+    })
+    assert response.status_code == 200
+    assert "Number of Places: "  in response.data.decode('UTF-8')
