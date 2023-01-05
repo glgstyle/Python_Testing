@@ -19,6 +19,23 @@ def loadCompetitions():
          return listOfCompetitions
 
 
+def loadCompetition(competition_name):
+    with open('competitions.json') as comps:
+        listOfCompetitions = json.load(comps)['competitions']
+        for comp in listOfCompetitions:
+          if comp['name'] == competition_name:
+            return comp
+        return None
+
+
+def update_competitions_places(data, competition):
+    competitions_file = open("competitions.json", "w")
+    for d in data:
+        if d['name'] == competition['name']:
+            d['numberOfPlaces'] = str(competition['numberOfPlaces'])
+    json.dump({'competitions':data}, competitions_file, indent=4)
+
+
 app = Flask(__name__)
 app.secret_key = 'something_special'
 # app.config.from_object(DevelopmentConfig)
@@ -118,6 +135,13 @@ def purchasePlaces():
     else:
         competition['numberOfPlaces'] = availablesCompetitionPlaces - placesRequired
         club['points'] = club_points_substrations(club, clubPoints, placesRequired)
+        data = loadCompetitions()
+        update_competitions_places(data, competition)
+        # competitions_file = open("competitions.json", "w")
+        # for d in data:
+        #     if d['name'] == competition['name']:
+        #         d['numberOfPlaces'] = str(competition['numberOfPlaces'])
+        # json.dump({'competitions':data}, competitions_file, indent=4)
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
 
