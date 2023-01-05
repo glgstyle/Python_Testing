@@ -107,6 +107,17 @@ def club_points_substrations(club, clubPoints, placesRequired):
     return club['points']
 
 
+def is_past_competition(competition):
+    competition_date = competition["date"]
+    competition_date = datetime.strptime(
+    competition_date,
+    "%Y-%m-%d %H:%M:%S")
+    now = datetime.now()
+    if competition_date < now : 
+        return True
+    return False
+
+
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
     clubs = loadClubs()
@@ -130,6 +141,10 @@ def purchasePlaces():
         return render_template('booking.html',club=club,competition=competition), 405
     elif placesRequired > MAX_BOOKING:
         message = "Booking more than " + str(MAX_BOOKING) + " places is forbidden."
+        flash(message)
+        return render_template('booking.html',club=club,competition=competition), 405
+    elif is_past_competition(competition):
+        message = "Booking a past competition is forbidden."
         flash(message)
         return render_template('booking.html',club=club,competition=competition), 405
     else:
