@@ -1,4 +1,4 @@
-import json, os
+import json
 from flask import Flask,render_template,request,redirect,flash,url_for
 from config import Config, DevelopmentConfig
 from datetime import datetime
@@ -67,17 +67,20 @@ def search_club_by_email(clubs, email):
     return found_club
 
 
-@app.route('/showSummary',methods=['POST'])
+@app.route('/showSummary',methods=['GET','POST'])
 def showSummary():
-    clubs = loadClubs()
     club = search_club_by_email(clubs, email=request.form['email'])
     if not club:
         message = "Sorry, that email wasn't found."
         flash(message)
         return render_template('index.html'), 401
     else:
-        return render_template('welcome.html',club=club,competitions=competitions)
-    
+        return render_template('welcome.html',club=club, competitions=competitions)
+
+@app.route('/pointsDisplayBoard')
+def displayClubPoints():
+    clubs = loadClubs()
+    return render_template('display_clubs.html',clubs=clubs)
 
 def search_club_by_name(clubs, name):
     found_club = None
@@ -162,11 +165,6 @@ def purchasePlaces():
         clubs_data = loadClubs()
         update_competitions_places(competitions_data, competition)
         update_club_points_balance(clubs_data, club)
-        # competitions_file = open("competitions.json", "w")
-        # for d in data:
-        #     if d['name'] == competition['name']:
-        #         d['numberOfPlaces'] = str(competition['numberOfPlaces'])
-        # json.dump({'competitions':data}, competitions_file, indent=4)
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
 
@@ -175,8 +173,5 @@ def purchasePlaces():
 def logout():
     return redirect(url_for('index'))
 
-
-# TODO: 
-# Add route for points display
 
     

@@ -25,3 +25,9 @@ def loadClub(club_name):
           if club['name'] == club_name:
             return club
         return None
+
+
+def loadClubs():
+    with open('clubs.json') as c:
+         listOfClubs = json.load(c)['clubs']
+         return listOfClubs
