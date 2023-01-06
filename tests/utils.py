@@ -18,7 +18,7 @@ def loadCompetition(competition_name):
 
 
 #  load the requested club object
-def loadclub(club_name):
+def loadClub(club_name):
     with open('clubs.json') as clubs:
         listOfClubs = json.load(clubs)['clubs']
         for club in listOfClubs:
