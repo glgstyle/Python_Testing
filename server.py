@@ -1,6 +1,10 @@
 import json, os
 from flask import Flask,render_template,request,redirect,flash,url_for
 from config import Config, DevelopmentConfig
+from datetime import datetime
+
+
+MAX_BOOKING = 12
 
 
 def loadClubs():
@@ -15,6 +19,23 @@ def loadCompetitions():
          return listOfCompetitions
 
 
+def loadCompetition(competition_name):
+    with open('competitions.json') as comps:
+        listOfCompetitions = json.load(comps)['competitions']
+        for comp in listOfCompetitions:
+          if comp['name'] == competition_name:
+            return comp
+        return None
+
+
+def update_competitions_places(data, competition):
+    competitions_file = open("competitions.json", "w")
+    for d in data:
+        if d['name'] == competition['name']:
+            d['numberOfPlaces'] = str(competition['numberOfPlaces'])
+    json.dump({'competitions':data}, competitions_file, indent=4)
+
+
 app = Flask(__name__)
 app.secret_key = 'something_special'
 # app.config.from_object(DevelopmentConfig)
@@ -22,6 +43,7 @@ app.config.update(TESTING=True, DEBUG=True)
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+
 
 @app.route('/')
 def index():
@@ -106,9 +128,20 @@ def purchasePlaces():
         message = "Booking a negative number of places or 0 is forbidden."
         flash(message)
         return render_template('booking.html',club=club,competition=competition), 405
+    elif placesRequired > MAX_BOOKING:
+        message = "Booking more than " + str(MAX_BOOKING) + " places is forbidden."
+        flash(message)
+        return render_template('booking.html',club=club,competition=competition), 405
     else:
         competition['numberOfPlaces'] = availablesCompetitionPlaces - placesRequired
         club['points'] = club_points_substrations(club, clubPoints, placesRequired)
+        data = loadCompetitions()
+        update_competitions_places(data, competition)
+        # competitions_file = open("competitions.json", "w")
+        # for d in data:
+        #     if d['name'] == competition['name']:
+        #         d['numberOfPlaces'] = str(competition['numberOfPlaces'])
+        # json.dump({'competitions':data}, competitions_file, indent=4)
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
 

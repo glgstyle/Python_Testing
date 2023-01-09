@@ -7,3 +7,4 @@ def client():
     app = app_flask
     with app.test_client() as client:
         yield client
+
