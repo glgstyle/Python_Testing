@@ -113,7 +113,7 @@ def test_booked_places_should_be_subtracted_from_competitions_places(client):
     competition = loadCompetition("Spring Festival")
     available_places = int(competition['numberOfPlaces'])
     required_places = 5
-    competition_places = int(competition['numberOfPlaces'])
+    competition_places = available_places
     response= client.post('/purchasePlaces', data={
       "club": "She Lifts",
       "competition": competition['name'],
@@ -123,3 +123,22 @@ def test_booked_places_should_be_subtracted_from_competitions_places(client):
     competition_places_after = int(competition_after['numberOfPlaces'])
     assert response.status_code == 200
     assert competition_places_after == (competition_places - required_places)
+
+# past_competition
+def test_book_past_competition_should_return_error(client):
+    """
+    Test club books places in past competition which is impossible.
+    """
+    reset_data()
+    competition = loadCompetition("Freebie Shark")
+    available_competition_places = int(competition['numberOfPlaces']) 
+    response = client.post('/purchasePlaces', data={
+      "club": "She Lifts",
+      "competition": competition['name'],
+      "places": 2
+    })
+    assert response.status_code == 405
+    competition_after = loadCompetition("Freebie Shark")
+    competition_places_after = int(competition_after['numberOfPlaces'])
+    assert available_competition_places == competition_places_after
+    assert "Booking a past competition is forbidden." in response.data.decode('UTF-8')
