@@ -19,15 +19,6 @@ def loadCompetitions():
          return listOfCompetitions
 
 
-def loadCompetition(competition_name):
-    with open('competitions.json') as comps:
-        listOfCompetitions = json.load(comps)['competitions']
-        for comp in listOfCompetitions:
-          if comp['name'] == competition_name:
-            return comp
-        return None
-
-
 def update_competitions_places(competitions_data, competition):
     competitions_file = open("competitions.json", "w")
     for d in competitions_data:
