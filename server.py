@@ -1,5 +1,6 @@
-import json
+import json, os
 from flask import Flask,render_template,request,redirect,flash,url_for
+from config import Config, DevelopmentConfig
 
 
 def loadClubs():
@@ -16,6 +17,8 @@ def loadCompetitions():
 
 app = Flask(__name__)
 app.secret_key = 'something_special'
+# app.config.from_object(DevelopmentConfig)
+app.config.update(TESTING=True, DEBUG=True)
 
 competitions = loadCompetitions()
 clubs = loadClubs()
@@ -24,12 +27,28 @@ clubs = loadClubs()
 def index():
     return render_template('index.html')
 
+
+def search_club_by_email(clubs, email):
+    found_club = None
+    for club in clubs:
+        if club['email'] == email:
+            found_club = club
+            break
+    return found_club
 @app.route('/showSummary',methods=['POST'])
+
+
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']][0]
-    return render_template('welcome.html',club=club,competitions=competitions)
-
-
+    clubs = loadClubs()
+    club = search_club_by_email(clubs, email=request.form['email'])
+    if not club:
+        message = "Sorry, that email wasn't found."
+        flash(message)
+        return render_template('index.html'), 401
+    else:
+        return render_template('welcome.html',club=club,competitions=competitions)
+    
+ 
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
@@ -51,9 +70,12 @@ def purchasePlaces():
     return render_template('welcome.html', club=club, competitions=competitions)
 
 
-# TODO: Add route for points display
-
-
 @app.route('/logout')
 def logout():
     return redirect(url_for('index'))
+
+
+# TODO: 
+# Add route for points display
+
+    
