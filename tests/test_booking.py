@@ -1,5 +1,5 @@
 from server import MAX_BOOKING
-from .utils import reset_data, loadclub, loadCompetition
+from .utils import reset_data, loadClub, loadCompetition
 # They should not be able to redeem more points than available; this should be done within the UI. 
 # The redeemed points should be correctly deducted from the club's total.
 
@@ -25,7 +25,7 @@ def test_insufficient_points_balance_should_return_error(client):
     """
     reset_data()
     competition = loadCompetition("Spring Festival")
-    club = loadclub("She Lifts")
+    club = loadClub("She Lifts")
     club_points = club['points']
     required_places = 16
     response= client.post('/purchasePlaces', data={
@@ -77,7 +77,7 @@ def test_booked_places_should_subtract_club_points(client):
     with points of club = 15.  
     """
     reset_data()
-    club = loadclub("She Lifts")
+    club = loadClub("She Lifts")
     club_points = int(club['points'])
     places_required = 3
     response= client.post('/purchasePlaces', data={
@@ -142,3 +142,27 @@ def test_book_past_competition_should_return_error(client):
     competition_places_after = int(competition_after['numberOfPlaces'])
     assert available_competition_places == competition_places_after
     assert "Booking a past competition is forbidden." in response.data.decode('UTF-8')
+
+
+# The points are correctly deducted from the club's balance
+def test_booked_places_should_be_subtracted_from_club_balance(client):
+    """
+    Test deduction of points from club's balance
+    when club books a competition.  
+    """
+    reset_data()
+    club = loadClub("Simply Lift")
+    club_points = int(club['points'])
+    print("club_points", club_points)
+    required_places = 5
+    response= client.post('/purchasePlaces', data={
+      "club": club['name'],
+      "competition": "Fall Classic",
+      "places": required_places
+    })
+    club_after = loadClub("Simply Lift")
+    club_points_after = int(club_after['points'])
+    print("club_points_after", club_points_after)
+    assert response.status_code == 200
+    assert club_points_after == (club_points - required_places)
+    

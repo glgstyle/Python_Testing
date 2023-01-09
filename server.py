@@ -28,12 +28,20 @@ def loadCompetition(competition_name):
         return None
 
 
-def update_competitions_places(data, competition):
+def update_competitions_places(competitions_data, competition):
     competitions_file = open("competitions.json", "w")
-    for d in data:
+    for d in competitions_data:
         if d['name'] == competition['name']:
             d['numberOfPlaces'] = str(competition['numberOfPlaces'])
-    json.dump({'competitions':data}, competitions_file, indent=4)
+    json.dump({'competitions':competitions_data}, competitions_file, indent=4)
+
+
+def update_club_points_balance(clubs_data, club):
+    club_file = open("clubs.json", "w")
+    for d in clubs_data:
+        if d['name'] == club['name']:
+            d['points'] = str(club['points'])
+    json.dump({'clubs':clubs_data}, club_file, indent=4)
 
 
 app = Flask(__name__)
@@ -150,8 +158,10 @@ def purchasePlaces():
     else:
         competition['numberOfPlaces'] = availablesCompetitionPlaces - placesRequired
         club['points'] = club_points_substrations(club, clubPoints, placesRequired)
-        data = loadCompetitions()
-        update_competitions_places(data, competition)
+        competitions_data = loadCompetitions()
+        clubs_data = loadClubs()
+        update_competitions_places(competitions_data, competition)
+        update_club_points_balance(clubs_data, club)
         # competitions_file = open("competitions.json", "w")
         # for d in data:
         #     if d['name'] == competition['name']:
