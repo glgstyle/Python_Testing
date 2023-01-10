@@ -1,4 +1,4 @@
-from .utils import loadClub, loadClubs, loadCompetition
+from ..utils import loadClub, loadClubs, loadCompetition
 # They should be able to see the list of clubs and their associated current points balance
 
 

@@ -71,3 +71,11 @@
         or 
 
         ```pytest --cov=. --cov-report html``` (to generate also an html report of coverage , then go to index in htmlcov to see details)
+    
+    - To test the performance using locust, you should go in the directory where is locustfile.py and enter the following command line:
+
+        ```locust```
+
+        then you must go on the web browser to this following address:
+
+            http://localhost:8089/
