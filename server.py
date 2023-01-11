@@ -68,10 +68,6 @@ def showSummary():
     else:
         return render_template('welcome.html',club=club, competitions=competitions)
 
-@app.route('/pointsDisplayBoard')
-def displayClubPoints():
-    clubs = loadClubs()
-    return render_template('display_clubs.html',clubs=clubs)
 
 def search_club_by_name(clubs, name):
     found_club = None
@@ -165,4 +161,8 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/pointsDisplayBoard')
+def displayClubPoints():
+    clubs = loadClubs()
+    return render_template('display_clubs.html',clubs=clubs)
     
