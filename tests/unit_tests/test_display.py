@@ -15,3 +15,15 @@ def test_book_should_load_competition(client):
     expecting_data =  "<li>\n            "+ name + "<br />\n            Date: " + date + "</br>\n            Number of Places: " + places + "\n            \n            "
     assert expecting_data in response.data.decode('UTF-8')
     assert response.status_code == 200
+
+
+def test_should_display_list_of_clubs(client):
+    """Test if the list of clubs well displayed on page."""
+    response = client.get('/pointsDisplayBoard')
+    clubs = loadClubs()
+    for club in clubs:
+        name = club['name']
+        points = club['points']
+        expecting_data = "<li>\n            "+ name + "<br />\n            " + "Points: " + points + "</br>\n        </li>\n"
+        assert expecting_data in response.data.decode('UTF-8')
+    assert response.status_code == 200

@@ -161,4 +161,8 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/pointsDisplayBoard')
+def displayClubPoints():
+    clubs = loadClubs()
+    return render_template('display_clubs.html',clubs=clubs)
     
