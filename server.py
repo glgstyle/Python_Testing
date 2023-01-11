@@ -2,6 +2,7 @@ import json
 from flask import Flask,render_template,request,redirect,flash,url_for
 from config import Config, DevelopmentConfig
 from datetime import datetime
+from werkzeug.exceptions import BadRequestKeyError
 
 
 MAX_BOOKING = 12
@@ -60,13 +61,17 @@ def search_club_by_email(clubs, email):
 
 @app.route('/showSummary',methods=['GET','POST'])
 def showSummary():
-    club = search_club_by_email(clubs, email=request.form['email'])
-    if not club:
-        message = "Sorry, that email wasn't found."
-        flash(message)
-        return render_template('index.html'), 401
-    else:
-        return render_template('welcome.html',club=club, competitions=competitions)
+    try:
+        club = search_club_by_email(clubs, email=request.form['email'])
+        if not club:
+            message = "Sorry, that email wasn't found."
+            flash(message)
+            return render_template('index.html'), 401
+        else:
+            return render_template('welcome.html',club=club, competitions=competitions)
+    except BadRequestKeyError:
+        flash("You must be authenticated to access this page.")
+        return render_template('index.html'), 405
 
 
 def search_club_by_name(clubs, name):

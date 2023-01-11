@@ -1,4 +1,7 @@
 from ..utils import loadClub, loadClubs, loadCompetition
+import pytest
+from server import showSummary
+from werkzeug.exceptions import BadRequestKeyError
 # They should be able to see the list of clubs and their associated current points balance
 
 
@@ -40,3 +43,9 @@ def test_should_display_list_of_clubs(client):
         expecting_data = "<li>\n            "+ name + "<br />\n            " + "Points: " + points + "</br>\n        </li>\n"
         assert expecting_data in response.data.decode('UTF-8')
     assert response.status_code == 200
+
+
+# test don't display page summarry if not authenticated
+def test_should_not_display_summarry_if_no_authenticated(client):
+    response = client.get('/showSummary')
+    assert response.status_code == 405
