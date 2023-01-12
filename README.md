@@ -79,3 +79,12 @@
         then you must go on the web browser to this following address:
 
             http://localhost:8089/
+    
+    - To test integration using pytest you can use this followed command line
+        only for integration tests:
+
+        ```pytest -m integtest```
+
+        or execute unit tests witout integration tests:
+
+        ```pytest -m "not integtest"```

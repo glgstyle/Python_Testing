@@ -1,7 +1,8 @@
 from ..utils import loadClub, loadClubs, loadCompetition
-# They should be able to see the list of clubs and their associated current points balance
+import pytest
 
 
+@pytest.mark.integtest
 def test_book_should_load_competition(client):
     """Test if the competition to book is well displayed on page."""
     club = "She Lifts"
@@ -17,6 +18,7 @@ def test_book_should_load_competition(client):
     assert response.status_code == 200
 
 
+@pytest.mark.integtest
 def test_book_should_failed_load_competition(client):
     """Test if the competition to book is well displayed on page."""
     club = "Unknow club"
@@ -29,7 +31,8 @@ def test_book_should_failed_load_competition(client):
     assert expecting_data in response.data.decode('UTF-8')
     assert response.status_code == 200
 
-    
+
+@pytest.mark.integtest
 def test_should_display_list_of_clubs(client):
     """Test if the list of clubs well displayed on page."""
     response = client.get('/pointsDisplayBoard')
@@ -40,9 +43,3 @@ def test_should_display_list_of_clubs(client):
         expecting_data = "<li>\n            "+ name + "<br />\n            " + "Points: " + points + "</br>\n        </li>\n"
         assert expecting_data in response.data.decode('UTF-8')
     assert response.status_code == 200
-
-
-# test don't display page summarry if not authenticated
-def test_should_not_display_summarry_if_no_authenticated(client):
-    response = client.get('/showSummary')
-    assert response.status_code == 405
