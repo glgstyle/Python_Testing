@@ -45,4 +45,4 @@ def test_should_display_list_of_clubs(client):
 # test don't display page summarry if not authenticated
 def test_should_not_display_summarry_if_no_authenticated(client):
     response = client.get('/showSummary')
-    assert response.status_code == 405
+    assert response.status_code == 403

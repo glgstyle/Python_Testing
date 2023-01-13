@@ -71,7 +71,7 @@ def showSummary():
             return render_template('welcome.html',club=club, competitions=competitions)
     except BadRequestKeyError:
         flash("You must be authenticated to access this page.")
-        return render_template('index.html'), 405
+        return render_template('index.html'), 403
 
 
 def search_club_by_name(clubs, name):
