@@ -1,5 +1,4 @@
-from server import MAX_BOOKING
-from ..utils import reset_data, loadClub, loadCompetition
+from ..utils import reset_data
 import pytest
 
 
@@ -10,7 +9,7 @@ def test_sufficient_points_balance_should_return_status_200(client):
     Test club book a competition with sufficient points balance.
     """
     reset_data()
-    response= client.post('/purchasePlaces', data={
+    response = client.post('/purchasePlaces', data={
       "club": "She Lifts",
       "competition": "Spring Festival",
       "places": 12
