@@ -1,5 +1,5 @@
 class Config(object):
-    FLASK_ENV = 'development'
+    FLASK_DEBUG = 'development'
     DEBUG = True
     TESTING = True
     DATABASE_URI = 'sqlite:///:memory:'

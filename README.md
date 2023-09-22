@@ -39,12 +39,15 @@
         
         and  
         
-        ```set FLASK_ENV=development``` (to change for development environment). 
+        ```set FLASK_DEBUG=True``` (to change for development environment). 
         
-        
+        and 
+
+        ```flask run``` or ```python -m flask run```
+
         Check [here](https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application) for more details
 
-    - You should now be ready to test the application. In the directory, type either <code>flask run</code> or <code>python -m flask run</code>. The app should respond with an address you should be able to go to using your browser.
+    - You should now be ready to test the application. The app should respond with an address you should be able to go to using your browser.
 
 4. Current Setup 
 

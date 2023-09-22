@@ -167,7 +167,6 @@ def test_booked_places_should_be_subtracted_from_club_balance(client):
     reset_data()
     club = loadClub("Simply Lift")
     club_points = int(club['points'])
-    print("club_points", club_points)
     required_places = 5
     response = client.post('/purchasePlaces', data={
       "club": club['name'],
@@ -176,6 +175,5 @@ def test_booked_places_should_be_subtracted_from_club_balance(client):
     })
     club_after = loadClub("Simply Lift")
     club_points_after = int(club_after['points'])
-    print("club_points_after", club_points_after)
     assert response.status_code == 200
     assert club_points_after == (club_points - required_places)
